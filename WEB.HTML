@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crush</title>
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: #e94d58;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .heart {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .description {
+            font-size: 1.2rem;
+            margin: 10px 0 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: #e94d58;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #c43d4b;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart">❤️</div>
+        <h1 class="message">Crush</h1>
+        <p class="description">Чиний инээмсэглэл миний зүрхийг хурдан цохилуулдаг.</p>
+        <a href="2.html">
+            <button class="btn">Энэ дээр дарна уу!</button>
+        </a>
+    </div>
+    <canvas id="testCanvas"></canvas>
+    <script>
+        let canvas, stage, container;
+
+        function init() {
+            canvas = document.getElementById("testCanvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stage = new createjs.Stage(canvas);
+
+            container = new createjs.Container();
+            stage.addChild(container);
+
+            for (let i = 0; i < 300; i++) {
+                let heart = new createjs.Shape();
+                heart.graphics.beginFill("#e94d58");
+                heart.graphics.moveTo(0, -12)
+                    .curveTo(1, -20, 8, -20)
+                    .curveTo(16, -20, 16, -10)
+                    .curveTo(16, 0, 0, 12)
+                    .curveTo(-16, 0, -16, -10)
+                    .curveTo(-16, -20, -8, -20)
+                    .curveTo(-1, -20, 0, -12);
+                heart.y = Math.random() * canvas.height;
+                heart.x = Math.random() * canvas.width;
+                heart.velY = Math.random() * 2 + 1;
+                heart.velX = (Math.random() - 0.5) * 2;
+                heart.scale = Math.random() * 0.8 + 0.4;
+                heart.alpha = Math.random() * 0.8 + 0.2;
+                container.addChild(heart);
+            }
+
+            createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            createjs.Ticker.on("tick", tick);
+        }
+
+        function tick() {
+            container.children.forEach(heart => {
+                heart.y -= heart.velY;
+                heart.x += heart.velX;
+                if (heart.y < -50) heart.y = canvas.height + 50;
+                if (heart.x > canvas.width + 50) heart.x = -50;
+                if (heart.x < -50) heart.x = canvas.width + 50;
+            });
+
+            stage.update();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
